@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+    <div class="container" style="padding: 100px 0 200px 0;">
+        <h1>MARKALAR</h1>
+        <div class="row">
+            {% for brand in brands %}
+            <div class="col-3">
+                <a href="{% url 'category' %}?marka={{ brand.id }}">
+                    <div class="card bg-dark bg-opacity-10 border-0" style="width: 100%;">
+                        <img src="{{ brand.image.url }}" class="card-img-top py-5 px-1" alt="{{ brand.brand }}" style="height: 175px;">
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
+    

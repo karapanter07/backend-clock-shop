@@ -1,0 +1,438 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% load i18n %}
+
+
+{% block content %}
+
+
+
+<!-- Page Content -->
+<div class="content" style="padding: 150px 0;">
+    <div class="container">
+        <h1 class="text-center">ÖDEME SAYFASI</h1>
+        <div class="row">
+            <div class="col-md-7 col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+
+                        <!-- Checkout Form -->
+                        <form id="checkout-form" action="" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="appointment-ID" value="{{account_data.appointment.ID}}">
+                            <input type="hidden" name="advisor-ID" value="{{account_data.appointment.advisor_id}}">
+                            <!-- Personal Information -->
+                            <p id="page_payload_text"></p>
+                            {% with account_data.client as client_data %}
+                            <div class="info-widget">
+                                <h4 class="card-title">{% trans "Kişisel bilgi" %}</h4>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="mb-3 card-label">
+                                            <label>{% trans "İsim" %}</label>
+                                            <input class="form-control" type="text" name="first-name"
+                                                value="{{ profil_info.kullanici.first_name }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="mb-3 card-label">
+                                            <label>{% trans "Soyisim" %}</label>
+                                            <input class="form-control" type="text" name="last-name"
+                                                value="{{ profil_info.kullanici.last_name }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="mb-3 card-label">
+                                            <label>{% trans "Email" %}</label>
+                                            <input class="form-control" type="email" name="email"
+                                                value="{{ profil_info.kullanici.email }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="mb-3 card-label">
+                                            <label>{% trans "Telefon Numarası" %}</label>
+                                            <input class="form-control" type="text" name="phone-number"
+                                                value="{{ profil_info.telefon_numarasi }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Personal Information -->
+                            <div class="info-widget">
+                                <h4 class="card-title">{% trans "Fatura Bilgileri" %}</h4>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="control-label">{% trans "İl" %}</label>
+                                            <input type="text" class="form-control" name="city"
+                                                placeholder="{% trans 'Şehir Girin' %}"
+                                                value="{{ adres.il }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="control-label">{% trans "İlçe" %}</label>
+                                            <input id="state-province" type="text" class="form-control"
+                                                name="state_province" placeholder=""
+                                                value="{{ adres.ilce }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label>{% trans "Adres satırı" %}</label>
+                                            <textarea rows="5" type="text" class="form-control" name="address_line_1"
+                                                placeholder="{% trans 'Adres satırı 1 girin' %}"
+                                                 required >{{ adres.adres }}
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% endwith %}
+
+
+                            <!-- Personal Information -->
+                            <div class="info-widget">
+                                <h4 class="card-title">{% trans "Fatura Tipi" %}</h4>
+                                <div class="row">
+                                    <!-- Payment Type -->
+                                    <div class="payment-list">
+                                        <label class="payment-radio credit-card-option">
+                                            <input type="radio" name="billing-info" value="personal" checked>
+                                            <span class="checkmark"></span>
+                                            {% trans "Bireysel Fatura" %}
+                                        </label>
+                                        <label class="payment-radio">
+                                            <input type="radio" name="billing-info" value="corporate">
+                                            <span class="checkmark"></span>
+                                            {% trans "Kurumsal Fatura" %}
+                                        </label>
+                                    </div>
+                                    <!-- /Payment Type -->
+
+                                    <!-- Corporate Invoice Fields -->
+                                    <div id="corporate-invoice-fields" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3 card-label">
+                                                    <label>{% trans "VKN (Vergi Kimlik numarası)" %}</label>
+                                                    <input class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3 card-label">
+                                                    <label>{% trans "Vergi Dairesi" %}</label>
+                                                    <input class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3 card-label">
+                                                    <label>{% trans "Firma adı" %}</label>
+                                                    <input class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /Corporate Invoice Fields -->
+                                </div>
+                            </div>
+                            <!-- /Personal Information -->
+
+                            <!-- Payment Information -->
+                            <div class="payment-widget">
+                                <h4 class="card-title mt-3">{% trans "Ödeme yöntemi" %}</h4>
+
+
+
+                                <!-- Credit Card Payment -->
+                                <!-- <div class="payment-list">
+                                    <label class="payment-radio credit-card-option">
+                                        <input type="radio" name="payment_option" checked>
+                                        <span class="checkmark"></span>
+                                        {% trans "Kredi Kartı" %}
+                                    </label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3 card-label">
+                                                <label for="card_name">{% trans "Kart Üzerindeki isim" %} </label>
+                                                <input class="form-control" id="card_name" type="text" 
+                                                    name="card-name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3 card-label">
+                                                <label for="card_number">{% trans "Kard Numarası" %}</label>
+                                                <input class="form-control" id="card_number" name="card-number"
+                                                    placeholder="1234 5678 9876 5432" type="text" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3 card-label">
+                                                <label for="expiry_month">{% trans "Son Kullanma Ayı" %}</label>
+                                                <input class="form-control" id="expiry_month" placeholder="MM"
+                                                    type="number" required name="expiry-month" min="1" max="12">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3 card-label">
+                                                <label for="expiry_year">{% trans "Son Kullanma Yılı" %}</label>
+                                                <input class="form-control" id="expiry_year" placeholder="YY"
+                                                    type="number" required name="expiry-year">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3 card-label">
+                                                <label for="cvv">{% trans "CVV" %}</label>
+                                                <input class="form-control" id="cvv" type="text" pattern="\d{3}"
+                                                    name="cvv-code"
+                                                    title="{% trans 'CVC kodu 3 rakamdan oluşmalıdır.' %}" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <div class="container">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="exampleFormControlInput1">İsim</label>
+                                                    <input type="text" class="form-control" name="name" id="name" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="exampleFormControlInput1">Kart Numarası</label>
+                                                    <input type="text" class="form-control" name="number" id="number">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="exampleFormControlInput1">Son Kullanma Tarihi</label>
+                                                    <input type="text" class="form-control" name="expiry" id="expiry" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="exampleFormControlInput1">CVC</label>
+                                                    <input type="text" class="form-control" name="cvc" id="cvc" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="card-body"></div>
+                                            </div>
+                                        </div>
+                                </div>
+                                <!-- /Credit Card Payment -->
+
+                                <!-- Terms Accept -->
+                                <!-- <div class="terms-accept">
+                                    <div class="custom-checkbox">
+                                        <input type="checkbox" id="terms_accept" name="terms-accept" required>
+                                        <label for="terms_accept">{% trans "Okudum ve Kabul Ediyorum" %} 
+                                            <a href="">
+                                                {% trans "Şartlar" %} &amp; {% trans "Koşullar" %}
+                                            </a></label>
+                                    </div>
+                                </div> -->
+                                <!-- /Terms Accept -->
+
+
+                                <!-- Submit Section -->
+                                <div class="submit-section mt-4">
+                                    <button id="checkout-btn" type="submit" class="btn btn-primary submit-btn d-block ms-auto">
+                                        {% trans "Onayla ve öde" %}
+                                    </button>
+                                </div>
+                                <!-- /Submit Section -->
+                                <br>
+                                <!-- <div class="iyzico-payment-logo">
+                                    <img src="{% static 'img\checkout_iyzico_ile_ode\TR\Tr_Colored_Horizontal\iyzico_ile_ode_colored_horizontal.png' %}"
+                                        alt="İyzipay" class="iyzico-logo">
+                                </div> -->
+                            </div>
+                        </form>
+                        <!-- /Checkout Form -->
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-5 col-lg-4 theiaStickySidebar">
+
+                <!-- Booking Summary -->
+                <div class="card booking-card">
+                    <div class="card-header">
+                        <h4 class="card-title">{% trans "Sipariş Özeti" %}</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-4">
+                            <h5 class="mb-0 me-4">Ürün Toplam :</h5>
+                            <p class="mb-0 text-dark">₺{{ product_total_price }}</p>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <h5 class="mb-0 me-4">Kargo :</h5>
+                            <div class="">
+                                <p class="mb-0 text-dark">₺{{ kargo }}</p>
+                            </div>
+                        </div>
+                        <div class="py-4 border-top d-flex justify-content-between">
+                            <h5 class="mb-0">Toplam</h5>
+                            <p class="mb-0 text-dark">₺{{ total_price }}</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <!-- /Booking Summary -->
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- /Page Content -->
+{% endblock %}
+
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var paymentTypeRadios = document.querySelectorAll('input[name="radio"]');
+        var corporateInvoiceFields = document.getElementById('corporate-invoice-fields');
+
+        for (var i = 0; i < paymentTypeRadios.length; i++) {
+            paymentTypeRadios[i].addEventListener('change', function () {
+                if (this.value === 'corporate') {
+                    corporateInvoiceFields.style.display = 'block';
+                } else {
+                    corporateInvoiceFields.style.display = 'none';
+                }
+            });
+        }
+    });
+
+    function checkPayment(payload){
+        let {payment} = payload
+        if (payment !== undefined && payment["status"]){
+            console.log(payment["message"])
+            let element = $("#page_payload_text")
+            element.addClass("text-danger")
+            element.text(JSON.stringify(payment["message"]))
+           // alert(payment)
+        }
+        //console.log("payment error boş")
+        return
+    }
+
+    $(function () {
+        let pagePayloadJson = '{{ page_payload_json | safe }}'
+        let pagePayloadParse = JSON.parse(pagePayloadJson);
+        //console.log("pagePayload", pagePayloadParse)
+        checkPayment(pagePayloadParse)
+    });
+
+
+
+
+</script>
+
+<script>
+    "use strict";
+    function TCNOKontrol(TCNO) {
+        var tek = 0,
+            cift = 0,
+            sonuc = 0,
+            TCToplam = 0,
+            i = 0,
+            hatali = [11111111110, 22222222220, 33333333330, 44444444440, 55555555550, 66666666660, 7777777770, 88888888880, 99999999990];;
+
+        if (TCNO.length != 11) return false;
+        if (isNaN(TCNO)) return false;
+        if (TCNO[0] == 0) return false;
+
+        tek = parseInt(TCNO[0]) + parseInt(TCNO[2]) + parseInt(TCNO[4]) + parseInt(TCNO[6]) + parseInt(TCNO[8]);
+        cift = parseInt(TCNO[1]) + parseInt(TCNO[3]) + parseInt(TCNO[5]) + parseInt(TCNO[7]);
+
+        tek = tek * 7;
+        sonuc = Math.abs(tek - cift);
+        if (sonuc % 10 != TCNO[9]) return false;
+
+        for (var i = 0; i < 10; i++) {
+            TCToplam += parseInt(TCNO[i]);
+        }
+
+        if (TCToplam % 10 != TCNO[10]) return false;
+
+        if (hatali.toString().indexOf(TCNO) != -1) return false;
+
+        return true;
+    }
+    function tcno_control(tcInput) {
+        var tc = tcInput.value;
+        if (TCNOKontrol(tc)) {
+            tcInput.classList.remove('is-invalid');
+            tcInput.classList.add('is-valid');
+            //console.log('tcno doğru');
+        } else {
+            tcInput.classList.remove('is-valid');
+            tcInput.classList.add('is-invalid');
+            alert('TC Kimlik Numarası Hatalı');
+        }
+    }
+
+    function displayPayloadMessage(payload) {
+        let element = $("#page_payload_text")
+        element.addClass("text-danger")
+        element.text(payload.message)
+    }
+
+    function refreshPayloadMessage() {
+        let element = $("#page_payload_text")
+        element.removeClass("text-danger")
+        element.text('')
+    }
+
+    function checkPayload(payload) {
+        if (payload.action === 'error' && payload.status) {
+            return displayPayloadMessage(payload)
+        } else if (payload.action === 'warning' && payload.status) {
+            return displayPayloadMessage(payload)
+        }
+    }
+
+    $(document).ready(function () {
+        $("#identity-number").on("change", function (event) {
+            tcno_control(event.target)
+        })
+
+        //$("#checkout-btn").on('click', function(event){
+        //    event.preventDefault()
+        //    if ($("#terms_accept").is(":checked")) {
+
+        //        //console.log("checked")
+        //        $("#checkout-form").submit()
+        //    }else {
+        //        let payloadPrivacyWarning = {
+        //            action: "warning",
+        //            status: true,
+        //            message: "Lütfen Kullanım koşulları ve Gizlilik Politası'nı kabul ediniz!"
+        //        }
+    
+        //        return checkPayload(payloadPrivacyWarning)
+        //    }
+        //})
+    })
+
+    $(document).ready(function () {
+        // Bugünkü yılın son iki rakamını alır
+        var currentYear = new Date().getFullYear() % 100;
+        // Minimum değeri ayarlar
+        //console.log(currentYear)
+        $('#expiry_year').attr('min', currentYear);
+    });
+</script>
+{% endblock %}

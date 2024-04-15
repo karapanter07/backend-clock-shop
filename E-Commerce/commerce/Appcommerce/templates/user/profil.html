@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% load i18n %}
+{% block content %}
+
+{% block extra_styles %}
+<style>
+    select[name="gender"] {
+        border: 1px solid black !important;
+    }
+
+    .select2-search__field {
+        border: none !important;
+    }
+
+    label.active {
+        color: white !important;
+    }
+    ul li{
+        list-style-type: none;
+    }
+</style>
+
+{% endblock %}
+
+<!-- Page Content -->
+
+<div class="content" style="padding: 150px 0;" id="basic_information">
+    
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-12">
+                <form method="post">
+                    {% csrf_token %}
+                    <!-- Basic Information -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">{% trans "Temel Bilgiler" %}</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>{% trans "Ad" %}<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="first_name"
+                                            value="{{ profil_info.kullanici.first_name }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>{% trans "Soyad" %}<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="last_name"
+                                            value="{{ profil_info.kullanici.last_name }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>{% trans "E-mail" %}<span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" name="email"
+                                            value="{{ profil_info.kullanici.email }}" required>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>{% trans "Telefon Numarası" %}</label>
+                                        <input type="tel" class="form-control " name="phone_number"
+                                            {% if profil_info.telefon_numarasi %}
+                                            value=" {{ profil_info.telefon_numarasi }}"
+                                            {% endif %}
+                                                
+                                             id="tel" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-0">
+                                        <label>{% trans "Doğum Tarihi" %}</label>
+                                        <input type="date" class="form-control" name="date_of_birth"
+                                            value="{{ profil_info.dogum_tarihi|date:'Y-m-d' }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="submit-section submit-btn-bottom mt-3">
+                                <button type="submit" class="btn btn-primary d-block ms-auto" name="button" value="profil">
+                                    {% blocktrans %}
+                                    Değişiklikleri Kaydet
+                                    {% endblocktrans %}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Basic Information -->
+                </form>
+                <form method="post">
+                    {% csrf_token %}
+                    <!-- Change password -->
+                    <div class="card mt-3" id="change_password">
+                        <div class="card-body">
+                            <h4 class="card-title">{% trans "Şifre Değiştir" %}</h4>
+                            <div class="row flex-column d-flex justify-content-center align-items-center">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>{% trans "Eski Şifre" %}<span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control" name="old_password" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>{% trans "Yeni Şifre" %}<span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control" name="new_password" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>{% trans "Yeni Şifre(Tekrar)" %}<span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control" name="rnew_password" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="submit-section submit-btn-bottom mt-3">
+                                <button type="submit" class="btn btn-primary d-block ms-auto" name="button" value="password">
+                                    {% blocktrans %}
+                                    Değişiklikleri Kaydet
+                                    {% endblocktrans %}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Change password -->
+                </form>
+                <form method="post">
+                    {% csrf_token %}
+                    <!-- Address info -->
+                    <div class="card mt-3" id="address_info">
+                        <div class="card-body">
+                            <h4 class="card-title">{% trans "Adres Bilgileri" %}</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>{% trans "İl" %}<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="il"
+                                            value="{{ adres.il }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>{% trans "İlçe" %}<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="ilce"
+                                            value="{{ adres.ilce }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label>{% trans "Mahalle" %}<span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" name="mahalle"
+                                            value="{{ adres.mahalle }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label>{% trans "Adres" %}</label>
+                                        <textarea type="text" class="form-control" rows="5" name="adres">{{ adres.adres }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="submit-section submit-btn-bottom mt-3">
+                                <button type="submit" class="btn btn-primary d-block ms-auto" name="button" value="address">
+                                    {% blocktrans %}
+                                    Değişiklikleri Kaydet
+                                    {% endblocktrans %}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Address info -->
+                </form>
+
+                
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!-- /Page Content -->
+
+
+{% endblock %}
+
+
+{% block script %}
+<script>
+    
+</script>
+{% endblock %}

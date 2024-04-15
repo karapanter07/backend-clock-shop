@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+    <div class="container d-flex justify-content-center align-items-center flex-column" style="padding: 200px 0;">
+        <h1 class="text-center">Kayıt Ol</h1>
+        <div class="row w-50">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="exampleInputusername1" class="form-label">Ad</label>
+                  <input type="text" class="form-control" id="exampleInputusername1" aria-describedby="emailHelp" name="first_name" required>
+                </div>
+                <div class="mb-3">
+                  <label for="exampleInputusername2" class="form-label">Soyad</label>
+                  <input type="text" class="form-control" id="exampleInputusername2" aria-describedby="emailHelp" name="last_name" required>
+                </div>
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Email</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" required>
+                </div>
+                <div class="mb-3">
+                  <label for="exampleInputPassword1" class="form-label">Şifre</label>
+                  <input type="password" class="form-control" id="exampleInputPassword1" name="password" required>
+                </div>
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="registercheckbox" required>
+                  <label class="form-check-label" for="registercheckbox"><a href="" class="text-danger">Kullanım Koşulları</a>,<a href="" class="text-danger"> Kişisel Verilerin Korunması ve Aydınlatma Metni</a> hakkında bilgilendirmeyi okudum ve kabul ediyorum</label>
+                </div>
+                <p class="text-dark text-center">Zaten Üyeliğiniz Var Mı ?<a href="{% url 'login' %}" class="text-decoration-underline"> Tıklayınız.</a></p>
+                <button type="submit" class="btn btn-primary d-block ms-auto" id="btnsignup">Kayıt Ol</button>
+              </form>
+        </div>
+    </div>
+{% endblock content %}
+
+
+{% block extrajs %}
+    <script>
+      document.getElementById("btnsignup").addEventListener("click", function(){
+        const email = document.getElementById("exampleInputEmail1");
+        validateEmail(email)
+      })
+      function validateEmail(email) {
+        var re = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+        if(!re.test(email.value)){
+          email.style.border = "1px solid red";
+          alert("Lütfen Doğru Bir E-Mail Adresi Giriniz")
+        }
+        else{
+          email.style.border = "";
+        }
+      }
+    const checkbox = document.getElementById("registercheckbox");
+    const btnsignup = document.getElementById('btnsignup');
+
+    btnsignup.addEventListener('click',function(){
+        if (checkbox.checked) {
+          checkbox.style.border = "";
+        } 
+        else {
+          checkbox.style.border = "1px solid red";
+            alert("Lütfen Kullanım koşulları ve Kişisel Verilerin Korunması ve Aydınlatma Metni'ni kabul ediniz!"); 
+        }
+        });
+    </script>
+{% endblock extrajs %}
+  
+    

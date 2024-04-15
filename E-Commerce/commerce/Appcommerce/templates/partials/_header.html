@@ -1,0 +1,258 @@
+{% load static %}
+<header id="header" class="site-header header-scrolled position-fixed text-black bg-light">
+  <nav id="header-nav" class="navbar navbar-expand-lg px-3 mb-3">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'index' %}">
+        <img src="{% static 'images/main-logo.png' %}" class="logo">
+      </a>
+      <button class="navbar-toggler d-flex d-lg-none order-3 p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <svg class="navbar-icon">
+          <use xlink:href="#navbar-icon"></use>
+        </svg>
+      </button>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel">
+        <div class="offcanvas-header px-4 pb-0">
+          <a class="navbar-brand" href="{% url 'index' %}">
+            <img src="{% static 'images/main-logo.png' %}" class="logo">
+          </a>
+          <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul id="navbar" class="navbar-nav text-uppercase justify-content-end align-items-center flex-grow-1 pe-3">
+            <li class="nav-item">
+              <a class="nav-link me-4 
+              {% if request.path == '/' %}
+              active
+              {% endif %}
+                " href="{% url 'index' %}">Anasayfa</a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link me-4" href="#company-services">Servis</a>
+            </li> -->
+            
+            {% if request.path != "/" %}
+            <li class="nav-item">
+              <a class="nav-link me-4
+              
+              {% if request.GET.urlencode == 'cinsiyet=1' %}
+                active
+              {% endif %}
+                
+              " href="{% url 'category' %}?cinsiyet=1">Erkek Saat</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link me-4
+              {% if request.GET.urlencode == 'cinsiyet=2' %}
+                active
+              {% endif %}
+              " href="{% url 'category' %}?cinsiyet=2">Kadın Saat</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link me-4
+              {% if request.GET.urlencode == 'cinsiyet=3' %}
+                active
+              {% endif %}
+              " href="{% url 'category' %}?cinsiyet=3">Çocuk Saat</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link me-4
+              {% if request.GET.urlencode == 'tarz=2' %}
+                active
+              {% endif %}
+              " href="{% url 'category' %}?tarz=2">Akıllı Saat</a>
+            </li>
+            
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link me-4
+              
+              {% if request.GET.urlencode == 'cinsiyet=1' %}
+                active
+              {% endif %}
+                
+              " href="#man-watches">Erkek Saat</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link me-4
+              {% if request.GET.urlencode == 'cinsiyet=2' %}
+                active
+              {% endif %}
+              " href="#woman-watches">Kadın Saat</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link me-4
+              {% if request.GET.urlencode == 'cinsiyet=3' %}
+                active
+              {% endif %}
+              " href="#kid-watches">Çocuk Saat</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link me-4
+              {% if request.GET.urlencode == 'tarz=2' %}
+                active
+              {% endif %}
+              " href="#smart-watches">Akıllı Saat</a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link me-4 
+              {% if request.path == '/brands/' %}
+                active
+              {% endif %}" href="{% url 'brands' %}">Markalar</a>
+            </li>
+            <li class="nav-item">
+              <div class="user-items ps-5">
+                <ul class="d-flex justify-content-center align-items-center list-unstyled">
+                  <li class="search-item pe-3">
+                    <a href="#" class="search-button">
+                      <svg class="search">
+                        <use xlink:href="#search"></use>
+                      </svg>
+                    </a>
+                  </li>
+                  
+                  {% if request.user.is_authenticated %}
+                  <li class="nav-item dropdown">
+                    <a class="nav-link me-2 dropdown-toggle link-dark" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                      <svg class="user">
+                      <use xlink:href="#user">
+                      </use>
+                    </svg>
+                  </a>
+                    <ul class="dropdown-menu" style="position: absolute; top: 80%; left: -80px;">
+                      <li>
+                        <a href="{% url 'profil' %}" class="dropdown-item">Profil</a>
+                      </li>
+                      <li>
+                        <a href="{% url 'favorite' %}" class="dropdown-item">Favoriler</a>
+                      </li>
+                      <li>
+                        <a href="{% url 'logout' %}" class="dropdown-item">Çıkış Yap</a>
+                      </li>
+                    </ul>
+                  </li>
+                  {% if basket_products %}
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle link-dark position-relative" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                      <span class="position-absolute top-25 start-100 translate-middle badge rounded-pill bg-dark">
+                        
+                        {{ productquantity|length }}
+                          
+                      </span>
+                      <svg class="cart">
+                        <use xlink:href="#cart"></use>
+                      </svg>
+                  </a>
+                  
+                    <ul class="dropdown-menu" style="position: absolute; top: 80%; left: -370px;">
+
+                      <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                              <tr>
+                                <th class="h6" scope="col">Ürün</th>
+                                <th class="h6" scope="col">Marka-Model</th>
+                                <th class="h6" scope="col">Fiyat</th>
+                                <th class="h6" scope="col">Adet</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+  
+                                {% for product in basket_products %}
+            
+                                <form method="post">
+                                    {% csrf_token %}
+                                <tr>
+                                    <th scope="row">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ product.product.fotograf.url }}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
+                                        </div>
+                                    </th>
+                                    <td>
+                                        <h5 class="mb-0 text-dark">{{ product.product.marka }}</h5>
+                                        <h6 class="mb-0 mt-2 text-dark">{{ product.product.model }}</h6>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4 text-dark">₺{{ product.product.fiyat }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="text-center mb-0 mt-4 text-dark">{{ product.adet }}
+                                        </p>
+                                    </td>
+                                    
+                                </tr>
+                            </form>
+                     
+                                {% endfor %}
+                                        
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                      <div class="d-flex justify-content-around">
+                        <li>
+                          <a href="{% url 'sepet' %}" class="dropdown-item btn btn-primary text-center py-2 px-3">Sepete Git</a>
+                        </li>
+                        <li>
+                          <a href="#" class="dropdown-item btn btn-primary text-center py-2 px-3">Alışverişi Tamamla</a>
+                        </li>
+                      </div>
+                    </ul>
+                    {% else %}
+                    <li class="nav-item">
+                      <a class="nav-link link-dark position-relative" href="{% url 'sepet' %}">
+                        <span class="position-absolute top-25 start-100 translate-middle badge rounded-pill bg-dark">
+                          
+                          {{ productquantity|length }}
+                            
+                        </span>
+                        <svg class="cart">
+                          <use xlink:href="#cart"></use>
+                        </svg>
+                    </a>
+                    </li>
+                  </li>
+                  {% endif %}
+                  {% else %}
+                  <li class="pe-3">
+                    <a href="{% url 'login' %}">Giriş Yap
+                    </a>
+                  </li>
+                  <li>
+                    <a href="{% url 'register' %}">Kayıt Ol
+                    </a>
+                  </li>
+                  {% endif %}
+                    
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<!-- Search Popup -->
+<div class="search-popup">
+  <div class="search-popup-container">
+
+    <form role="search" method="get" class="search-form" action="{% url 'search' %}">
+      <input type="search" id="search-form" class="search-field" placeholder="Type and press enter" name="search" />
+      <button type="submit" class="search-submit"><svg class="search"><use xlink:href="#search"></use></svg></button>
+    </form>
+
+  </div>
+</div>
+<!-- Sepet Toast -->
+<!-- <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header">
+    <img src="..." class="rounded me-2" alt="...">
+    <strong class="me-auto">Bootstrap</strong>
+    <small>11 mins ago</small>
+    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+  <div class="toast-body">
+    Hello, world! This is a toast message.
+  </div>
+</div> -->
